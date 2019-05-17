@@ -18,11 +18,26 @@ import textwrap
 import usb.core
 import usb.util
 
+# buzzier
+def buzzier():
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(12, GPIO.OUT)
+    p = GPIO.PWM(12, 100)
+    p.start(100)
+
+    print("Do")
+    p.ChangeFrequency(1976)
+    time.sleep(0.2)
+
+    p.stop()
+    GPIO.cleanup()
+
+# printing
 example_strings = [ 
 '------------------------------',
 'Admission time: ',
 'Appearing time: ',
-'Thank you for your attention.']
+'Thank you for your attention.\n\n']
 
 # USB specific constant definitions
 PIPSTA_USB_VENDOR_ID = 0x0483
@@ -113,8 +128,8 @@ def inseToJSON(filename, getRFIDtag, timeToValue):
             getList.append([timeTotal])
             print("timeDiff: ", timeDiff)
             # Print image
-            os.system('lp ./logo/Black.jpg')
-            time.sleep(3)
+            os.system('python image_print.py ./logo/Black_s.png')
+            time.sleep(2)
             pipsta = setup_usb()
             admission = epochToStr(getTag[getTagLen-1])
             appearing = epochToStr(getTag[getTagLen-2])
@@ -126,7 +141,9 @@ def inseToJSON(filename, getRFIDtag, timeToValue):
                 print (textwrap.fill(line, PIPSTA_LINE_CHAR_WIDTH))
                 pipsta.write(textwrap.fill(line, PIPSTA_LINE_CHAR_WIDTH))
                 pipsta.write(CR)
+            pipsta.write(CR)
             pipsta.write(FEED_PAST_TEAR_BAR)
+            time.sleep(2)
           noTagNum=False
       # Add new RFID tag
       if noTagNum:
@@ -161,11 +178,12 @@ try:
     filename = "./recordTime.json"
     # Get arduino information
     while ser.in_waiting:
+      buzzier()
       # Get RFID Tag and now time
       data_raw = ser.readline()
       getRFIDtag = data_raw.decode('utf-8')
       getRFIDtag = getRFIDtag.strip('\r\n')
-
+    
       print('Receive Data: ', getRFIDtag)
       print(getNowTime)
 
@@ -184,6 +202,7 @@ try:
 
     # If we have the UID, continue
     if status == MIFAREReader.MI_OK:
+      buzzier()
       getUID = hex(uid[0])[2:] + hex(uid[1])[2:] + hex(uid[2])[2:] + hex(uid[3])[2:]
       getUID = getUID.upper()
       # Print UID
