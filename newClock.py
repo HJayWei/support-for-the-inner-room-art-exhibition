@@ -45,9 +45,9 @@ def Init():
     mode("logo")
     #建立三个表针Turtle并初始化
     #第二个参数为长度
-    mkHand("secHand", 60)
-    mkHand("minHand", 50)
-    mkHand("hurHand", 30)
+    mkHand("secHand", 40)
+    mkHand("minHand", 30)
+    mkHand("hurHand", 20)
     secHand = Turtle()
     secHand.shape("secHand")
     secHand.color('red')
@@ -128,9 +128,9 @@ def Tick():
     printer.back(180)
     printer.write(Week(t), align="center",
                   font=("Courier", 50, "bold"))
-    printer.back(700)
+    printer.back(400)
     printer.write(Sum(), align="center",
-                  font=("Courier", 50, "bold"))
+                  font=("Courier", 30, "bold"))
     printer.home()
     tracer(True)
  
@@ -138,10 +138,10 @@ def Tick():
  
 def main():
     try:
-        setup(width=1300, height=2000)
+        setup(width=720, height=1280)
         tracer(False)
         Init()
-        SetupClock(500)
+        SetupClock(300)
         tracer(True)
         Tick()
         mainloop()
